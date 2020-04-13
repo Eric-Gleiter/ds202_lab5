@@ -43,7 +43,7 @@ Cleaning of dataframe (if needed)
 ggplot(acc, aes(DAY_WEEK)) + geom_bar()
 
 ```
-It appears that most accidents occur on Saturday while monday has the least amount of accidents. 
+It appears that most accidents occur on Saturday while Wednesday has the least amount of accidents. We also see that most accidents happen during the weekend. 
 
 **2) What time of the day do accidents happen (use variable HOUR)?**
 ```{r}
@@ -96,9 +96,12 @@ Part Three:
 
 Read the description for the STATE and COUNTY columns in the FARS manual. The state & county codes are Geographic Locator Codes (GLCs) from the General Services Administration’s (GSA) publication
 Use readxl::read_xlsx to read in the GLCs. Visualize the number of accidents in each county using a choropleth map. To do this, you need to join the accident data, GLCs, and appropriate map data.
-
-
+```{r}
+glc<-readxl::read_xlsx('GLCs.xlsx')
+glc
+```
+```{r}
+```
 9. Can you find seasonal trends in accident occurrences in different states? Is summer or winter more dangerous? Why?
 ```{r}
-
 ```
