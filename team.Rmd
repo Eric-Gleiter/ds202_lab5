@@ -28,6 +28,7 @@ acc$DAY_WEEK<-recode(acc$DAY_WEEK,
        "6"="Friday",
        "7"="Saturday"
          )
+table(acc$DAY_WEEK)
 ```
 
 Cleaning of dataframe (if needed)
@@ -65,12 +66,28 @@ head(numDrunkDrivers)
 
 Part Two:
 4. In the person table, dentify drivers (PER_TYP == 1, see FARS manual) and subset on them.
+```{r}
+pers <- pers %>% filter(PER_TYP == 1)
+pers
+```
 
 5. Join accident and person table (work out which variable(s) to use)
-
+```{r}
+data<-full_join(acc,pers)
+data
+```
 6. Tally the number of accidents by day of the week (DAY_WEEK), hour of the day (HOUR) and gender (SEX). Visualize the results.
 ```{r}
-
+data %>% 
+  mutate(SEX = factor(SEX, levels=c(1, 2), labels=c('MALE', 'FEMALE')))%>% 
+  filter(!is.na(SEX)) %>% 
+  ggplot(aes(x=HOUR,fill=SEX))+
+    scale_fill_manual(values=c("Light Blue","Pink")) + 
+    geom_histogram(binwidth=3) + 
+    facet_grid(SEX~DAY_WEEK) + 
+    guides(fill=FALSE)+
+    xlim(c(0, 25)) + 
+    ggtitle("Number of accidents per Day of week vs Hour vs Sex")
 ```
 
 
@@ -78,8 +95,8 @@ Part Three:
 7. Now plot a choropleth map of accidents on a county level
 
 Read the description for the STATE and COUNTY columns in the FARS manual. The state & county codes are Geographic Locator Codes (GLCs) from the General Services Administration’s (GSA) publication
-Use readxl::read_xlsx to read in the GLCs
-8. Visualize the number of accidents in each county using a choropleth map. To do this, you need to join the accident data, GLCs, and appropriate map data. (Question 8 is not needed as per Piazza just write a breif analysis of 7)
+Use readxl::read_xlsx to read in the GLCs. Visualize the number of accidents in each county using a choropleth map. To do this, you need to join the accident data, GLCs, and appropriate map data.
+
 
 9. Can you find seasonal trends in accident occurrences in different states? Is summer or winter more dangerous? Why?
 ```{r}
