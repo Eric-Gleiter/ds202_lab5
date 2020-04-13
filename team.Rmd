@@ -36,15 +36,32 @@ Cleaning of dataframe (if needed)
 ```
 
 
-Part One:
-1) Are there some days of the week where more accidents happen than on others (use variable DAY_WEEK)?
-2) What time of the day do accidents happen (use variable HOUR)?
-3) What is the number of accidents with at least one drunk driver (use variable DRUNK_DR)?
+**Part One:**
+**1) Are there some days of the week where more accidents happen than on others (use variable DAY_WEEK)?**
 ```{r}
-
+ggplot(acc, aes(DAY_WEEK)) + geom_bar()
 
 ```
+It appears that most accidents occur on Saturday while monday has the least amount of accidents. 
 
+**2) What time of the day do accidents happen (use variable HOUR)?**
+```{r}
+ggplot(acc, aes(HOUR)) + geom_bar() + xlim(0,24)
+```
+
+Most accident occur later in the day with a peak around the 18 o'clock mark (6pm). Additionally there are approxamently 260 accidents with a time of 99:99. I took this to mean the time was unknown which is why the value is not a vailed time this accidents are not shown on the graph.
+
+
+**3) What is the number of accidents with at least one drunk driver (use variable DRUNK_DR)?**
+```{r}
+numDrunkDrivers <- acc %>%
+  filter(DRUNK_DR != 0) %>%
+  summarise(n = n())
+
+head(numDrunkDrivers)
+```
+
+8769 accident invlolve a drunk driver.
 
 Part Two:
 4. In the person table, dentify drivers (PER_TYP == 1, see FARS manual) and subset on them.
