@@ -43,7 +43,6 @@ acc$DAY_WEEK<-recode(acc$DAY_WEEK,
        "6"="Friday",
        "7"="Saturday"
          )
-table(acc$DAY_WEEK)
 ```
 
 
@@ -66,11 +65,10 @@ Most accident occur later in the day with a peak around the 18 o'clock mark (6pm
 
 **3) What is the number of accidents with at least one drunk driver (use variable DRUNK_DR)?**
 ```{r}
-numDrunkDrivers <- acc %>%
+acc %>%
   filter(DRUNK_DR != 0) %>%
-  summarise(n = n())
-
-head(numDrunkDrivers)
+  summarise(n = n()) %>%
+  head()
 ```
 
 8769 accident invlolve a drunk driver.
@@ -79,13 +77,11 @@ head(numDrunkDrivers)
 **4. In the person table, dentify drivers (PER_TYP == 1, see FARS manual) and subset on them.**
 ```{r}
 pers <- pers %>% filter(PER_TYP == 1)
-pers
 ```
 
 5. Join accident and person table (work out which variable(s) to use)
 ```{r}
 data<-full_join(acc,pers)
-data
 ```
 6. Tally the number of accidents by day of the week (DAY_WEEK), hour of the day (HOUR) and gender (SEX). Visualize the results.
 ```{r}
@@ -109,13 +105,16 @@ Read the description for the STATE and COUNTY columns in the FARS manual. The st
 Use readxl::read_xlsx to read in the GLCs. Visualize the number of accidents in each county using a choropleth map. To do this, you need to join the accident data, GLCs, and appropriate map data.
 ```{r}
 glc<-readxl::read_xlsx('GLCs.xlsx')
-glc
 ```
 ```{r}
 glc <- glc %>%
   select('State Name', STATE = 'State Code', COUNTY = 'County Code', 'County Name') %>%
-  mutate(STATE= as.integer(STATE),COUNTY= as.integer(COUNTY))
+  mutate(STATE= as.integer(STATE),COUNTY= as.integer(COUNTY)) %>%
+  mutate(`County Name`=tolower(`County Name`),`State Name`=tolower(`State Name`))
 data<-data %>%
+  group_by(STATE,COUNTY)%>%
+  summarize(count=n())%>%
+  select(STATE,COUNTY,count)%>%
   left_join(glc,by=c('STATE','COUNTY'))
 ```
 
@@ -132,7 +131,7 @@ data<-data %>%
 ```
 
 ```{r}
-ggplot(data,aes(long,lat))+geom_polygon()
+ggplot(data,aes(x=long,y=lat,fill=count))+geom_polygon(aes(group=group))+labs(x="Longitude",y="Latitude",title = "Accidents per County")
 ```
 9. Can you find seasonal trends in accident occurrences in different states? Is summer or winter more dangerous? Why?
 ```{r}
