@@ -4,9 +4,21 @@ author: "Eric Gleiter; Brandon Xicon"
 date: "4/12/2020"
 output: html_document
 ---
+*Note for readibilty all package/library checks and installlations are hidden on the html*
+```{r include=FALSE}
+if (!require("tidyverse")) {
+install.packages("tidyverse")
+}
+if (!require("dplyr")) {
+install.packages("dplyr")
+}
+if (!require("ggplot2")) {
+install.packages("ggplot2")
+}
+if (!require("maps")) {
+install.packages("maps")
+}
 
-```{r}
-#install.packages('maps')
 library(maps)
 library(ggplot2)
 library(dplyr)
@@ -34,10 +46,6 @@ acc$DAY_WEEK<-recode(acc$DAY_WEEK,
 table(acc$DAY_WEEK)
 ```
 
-Cleaning of dataframe (if needed)
-```{r}
-
-```
 
 
 **Part One:**
@@ -67,8 +75,8 @@ head(numDrunkDrivers)
 
 8769 accident invlolve a drunk driver.
 
-Part Two:
-4. In the person table, dentify drivers (PER_TYP == 1, see FARS manual) and subset on them.
+**Part Two:**
+**4. In the person table, dentify drivers (PER_TYP == 1, see FARS manual) and subset on them.**
 ```{r}
 pers <- pers %>% filter(PER_TYP == 1)
 pers
