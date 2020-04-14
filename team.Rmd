@@ -6,8 +6,11 @@ output: html_document
 ---
 
 ```{r}
+#install.packages('maps')
+library(maps)
 library(ggplot2)
 library(dplyr)
+library(tidyverse)
 ```
 
 ```{r}
@@ -101,6 +104,27 @@ glc<-readxl::read_xlsx('GLCs.xlsx')
 glc
 ```
 ```{r}
+glc <- glc %>%
+  select('State Name', STATE = 'State Code', COUNTY = 'County Code', 'County Name') %>%
+  mutate(STATE= as.integer(STATE),COUNTY= as.integer(COUNTY))
+data<-data %>%
+  left_join(glc,by=c('STATE','COUNTY'))
+```
+
+```{r}
+counties <- map_data('county')
+counties <- counties %>% 
+   mutate(`State Name` = region, `County Name` = subregion) %>% 
+   select(`State Name`, `County Name`, long, lat, group, order)
+```
+
+```{r}
+data<-data %>%
+  full_join(counties,by=c('State Name','County Name'))
+```
+
+```{r}
+ggplot(data,aes(long,lat))+geom_polygon()
 ```
 9. Can you find seasonal trends in accident occurrences in different states? Is summer or winter more dangerous? Why?
 ```{r}
