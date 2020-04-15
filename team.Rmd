@@ -74,7 +74,7 @@ acc %>%
 8769 accident invlolve a drunk driver.
 
 **Part Two:**
-**4. In the person table, dentify drivers (PER_TYP == 1, see FARS manual) and subset on them.**
+**4. In the person table, identify drivers (PER_TYP == 1, see FARS manual) and subset on them.**
 ```{r}
 pers <- pers %>% filter(PER_TYP == 1)
 ```
