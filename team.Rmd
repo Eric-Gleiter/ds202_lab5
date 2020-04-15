@@ -31,7 +31,7 @@ acc <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master
 pers <- read.csv("https://raw.githubusercontent.com/xdaiISU/ds202materials/master/hwlabs/fars2017/person.csv", stringsAsFactors = FALSE)
 ```
 
-```{r}
+```{r include=FALSE}
 acc %>%
   data.frame(acc)
 acc$DAY_WEEK<-recode(acc$DAY_WEEK,
@@ -83,7 +83,8 @@ pers <- pers %>% filter(PER_TYP == 1)
 ```{r}
 data<-full_join(acc,pers)
 ```
-6. Tally the number of accidents by day of the week (DAY_WEEK), hour of the day (HOUR) and gender (SEX). Visualize the results.
+
+**6. Tally the number of accidents by day of the week (DAY_WEEK), hour of the day (HOUR) and gender (SEX). Visualize the results.**
 ```{r}
 data %>% 
   mutate(SEX = factor(SEX, levels=c(1, 2), labels=c('MALE', 'FEMALE')))%>% 
@@ -98,12 +99,12 @@ data %>%
 ```
 
 
-Part Three:
-7. Now plot a choropleth map of accidents on a county level
+**Part Three:**
+**7. Now plot a choropleth map of accidents on a county level**
 
 Read the description for the STATE and COUNTY columns in the FARS manual. The state & county codes are Geographic Locator Codes (GLCs) from the General Services Administration’s (GSA) publication
 Use readxl::read_xlsx to read in the GLCs. Visualize the number of accidents in each county using a choropleth map. To do this, you need to join the accident data, GLCs, and appropriate map data.
-```{r}
+```{r include=FALSE}
 glc<-readxl::read_xlsx('GLCs.xlsx')
 ```
 ```{r}
@@ -116,28 +117,23 @@ data<-data %>%
   summarize(count=n())%>%
   select(STATE,COUNTY,count)%>%
   left_join(glc,by=c('STATE','COUNTY'))
-```
 
-```{r}
 counties <- map_data('county')
 counties <- counties %>% 
    mutate(`State Name` = region, `County Name` = subregion) %>% 
    select(`State Name`, `County Name`, long, lat, group, order)
-```
 
-```{r}
 data<-data %>%
   full_join(counties,by=c('State Name','County Name'))
-```
 
-```{r}
+
 ggplot(data,aes(x=long,y=lat,fill=count))+geom_polygon(aes(group=group))+labs(x="Longitude",y="Latitude",title = "Accidents per County")
 ```
 Here we see that a lot of counties have less than 250 accidents with ones that are higher than average being more frequent in the southern united states.  
 
 
 
-9. Can you find seasonal trends in accident occurrences in different states? Is summer or winter more dangerous? Why?
+**9. Can you find seasonal trends in accident occurrences in different states? Is summer or winter more dangerous? Why?**
 ```{r}
 monthlyacc = acc %>%
   select(STATE, MONTH) %>%
