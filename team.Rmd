@@ -111,8 +111,9 @@ glc<-readxl::read_xlsx('GLCs.xlsx')
 glc <- glc %>%
   select('State Name', STATE = 'State Code', COUNTY = 'County Code', 'County Name') %>%
   mutate(STATE= as.integer(STATE),COUNTY= as.integer(COUNTY)) %>%
-  mutate(`County Name`=tolower(`County Name`),`State Name`=tolower(`State Name`))
-data<-data %>%
+  mutate(`County Name`=tolower(`County Name`),`State Name`=tolower(`State Name`)) %>%
+  unique()
+acc2<-acc %>%
   group_by(STATE,COUNTY)%>%
   summarize(count=n())%>%
   select(STATE,COUNTY,count)%>%
@@ -123,11 +124,11 @@ counties <- counties %>%
    mutate(`State Name` = region, `County Name` = subregion) %>% 
    select(`State Name`, `County Name`, long, lat, group, order)
 
-data<-data %>%
+acc2<-acc2 %>%
   full_join(counties,by=c('State Name','County Name'))
 
 
-ggplot(data,aes(x=long,y=lat,fill=count))+geom_polygon(aes(group=group))+labs(x="Longitude",y="Latitude",title = "Accidents per County")
+ggplot(acc2,aes(x=long,y=lat,fill=count))+geom_polygon(aes(group=group))+labs(x="Longitude",y="Latitude",title = "Accidents per County")
 ```
 Here we see that a lot of counties have less than 250 accidents with ones that are higher than average being more frequent in the southern united states.  
 
