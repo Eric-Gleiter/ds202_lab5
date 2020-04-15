@@ -133,6 +133,19 @@ data<-data %>%
 ```{r}
 ggplot(data,aes(x=long,y=lat,fill=count))+geom_polygon(aes(group=group))+labs(x="Longitude",y="Latitude",title = "Accidents per County")
 ```
+Here we see that a lot of counties have less than 250 accidents with ones that are higher than average being more frequent in the southern united states.  
+
+
+
 9. Can you find seasonal trends in accident occurrences in different states? Is summer or winter more dangerous? Why?
 ```{r}
+monthlyacc = acc %>%
+  select(STATE, MONTH) %>%
+  left_join(glc, by=c('STATE')) %>%
+  rename('state_name' = 'State Name') %>% filter(state_name %in% c('iowa', 'texas', 'florida','oregon'))
+monthlyacc %>% group_by(state_name, MONTH) %>% ggplot(aes(x=MONTH)) + geom_bar() + facet_wrap(~state_name) + labs(x="Month",y="Number of Accidents",title="Accidents in Florida,Iowa,Texas and Oregon")
 ```
+
+Here we see that fatal accidents seem to have an even spread no matter what month it is, in Iowa however we do see a slight spike in accidents happening from june-september and again in december. This could be because of the frequent travel during those months and as we see that is not the same trend as oregon, florida and texas. 
+
+
